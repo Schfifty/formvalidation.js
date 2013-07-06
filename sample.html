@@ -3,29 +3,40 @@
 	<head>
 		<script type="text/javascript" src="scripts/jquery.js"></script>
 		<script type="text/javascript" src="scripts/formvalidation.js"></script>
+		<script type="text/javascript" src="scripts/jquery.formvalidation.js"></script>
+
 		<script type="text/javascript">			
+
 			$(function(){
 
-				new FormValidation.Forms.Form({
+				$("#testform").validform({
 					fields: {
-						'firstname': new FormValidation.Forms.Fields.TextField({ max_length: 5, min_length: 3 }),
-						'lastname': new FormValidation.Forms.Fields.IntegerField({ min: 3, max: 10 }),
-						'check': new FormValidation.Forms.Fields.BooleanField()
+						'name': new FormValidation.Forms.Fields.TextField({ max_length: 5, min_length: 3 }),
+						'age': new FormValidation.Forms.Fields.IntegerField({ min: 18, max: 60 }),
+						'accept': new FormValidation.Forms.Fields.BooleanField()
 					},
 					initial: {
 						'check': true
-					},
-					element: $("#testform")
+					}
 				});				
 				
 				$("#submit_form").click(function(event){
 					$("#testform").submit();
-				});							
+				});		
+
+				$("#lang_select").change(function(){
+					FormValidation.Locale.set_lang($(this).val());
+					$("#testform").validform("update");
+				});
 
 			});
 		</script>
 	</head>
 	<body>
+		<select id="lang_select">
+			<option value="en">English</option>
+			<option value="de">German</option>
+		</select>
 		<form id="testform"></form>
 		<button id="submit_form">Submit</button>
 	</body>
