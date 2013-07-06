@@ -4,7 +4,7 @@
 
 var FormValidation = new function(){
 
-	var helpers = new function(){
+	var Helpers = new function(){
 
 		this.create_class = function(definition, base){
 
@@ -25,19 +25,19 @@ var FormValidation = new function(){
 
 	this.Validation = new function(){
 
-		this.ValidationError = helpers.create_class({
+		this.ValidationError = Helpers.create_class({
 			init: function(message){
 				this.message = message;
 			}
 		});
 
-		this.Validator = helpers.create_class({	
+		this.Validator = Helpers.create_class({	
 			validate: function(value){
 				return;
 			}
 		});
 
-		this.RequiredValidator = helpers.create_class({
+		this.RequiredValidator = Helpers.create_class({
 			validate: function(value){
 				if(!value){
 					throw new FormValidation.Validation.ValidationError('This field is required')
@@ -45,7 +45,7 @@ var FormValidation = new function(){
 			}
 		}, this.Validator);
 
-		this.MaxLengthValidator = helpers.create_class({
+		this.MaxLengthValidator = Helpers.create_class({
 			init: function(max_length){
 				this.max_length = max_length;
 			},
@@ -57,7 +57,7 @@ var FormValidation = new function(){
 			}
 		}, this.Validator);
 
-		this.MinLengthValidator = helpers.create_class({
+		this.MinLengthValidator = Helpers.create_class({
 			init: function(min_length){
 				this.min_length = min_length;
 			},
@@ -69,7 +69,7 @@ var FormValidation = new function(){
 			}
 		}, this.Validator);
 
-		this.MinValueValidator = helpers.create_class({
+		this.MinValueValidator = Helpers.create_class({
 			init: function(min_value){
 				this.min_value = min_value;
 			},
@@ -80,7 +80,7 @@ var FormValidation = new function(){
 			}
 		}, this.Validator);
 
-		this.MaxValueValidator = helpers.create_class({
+		this.MaxValueValidator = Helpers.create_class({
 
 			init: function(max_value){
 				this.max_value = max_value;
@@ -100,7 +100,7 @@ var FormValidation = new function(){
 
 		this.State = new function(){
 
-			this.FieldCleaningState = helpers.create_class({
+			this.FieldCleaningState = Helpers.create_class({
 
 				init: function(value, error){
 					this.value = value;
@@ -117,7 +117,7 @@ var FormValidation = new function(){
 
 		this.Widgets = new function(){
 
-			this.Widget = helpers.create_class({
+			this.Widget = Helpers.create_class({
 
 				init: function(attrs){					
 					this.attrs = attrs || {};
@@ -148,7 +148,7 @@ var FormValidation = new function(){
 
 			});
 
-			this.CheckboxWidget = helpers.create_class({
+			this.CheckboxWidget = Helpers.create_class({
 				init: function(attrs){
 					FormValidation.Forms.Widgets.Widget.call(this, attrs);				
 				},
@@ -175,7 +175,7 @@ var FormValidation = new function(){
 
 			}, this.Widget);
 
-			this.TextFieldWidget = helpers.create_class({
+			this.TextFieldWidget = Helpers.create_class({
 				init: function(attrs){
 					FormValidation.Forms.Widgets.Widget.call(this, attrs);
 				}
@@ -185,7 +185,7 @@ var FormValidation = new function(){
 
 		this.Fields = new function(){
 
-			this.Field = helpers.create_class({
+			this.Field = Helpers.create_class({
 
 				init: function(options){
 					var defaults = {
@@ -227,7 +227,7 @@ var FormValidation = new function(){
 
 			});
 
-			this.IntegerField = helpers.create_class({	
+			this.IntegerField = Helpers.create_class({	
 
 				init: function(options){
 
@@ -267,7 +267,7 @@ var FormValidation = new function(){
 			}, this.Field);
 
 
-			this.TextField = helpers.create_class({	
+			this.TextField = Helpers.create_class({	
 
 				init: function(options){
 
@@ -302,7 +302,7 @@ var FormValidation = new function(){
 
 			}, this.Field);
 
-			this.BooleanField = helpers.create_class({	
+			this.BooleanField = Helpers.create_class({	
 
 				init: function(options){
 
@@ -326,7 +326,7 @@ var FormValidation = new function(){
 
 		}();
 
-		this.FormWidget = helpers.create_class({
+		this.FormWidget = Helpers.create_class({
 
 			build: function(form, widgets){
 				form.empty();
@@ -355,7 +355,7 @@ var FormValidation = new function(){
 
 		});
 
-		this.Form = helpers.create_class({
+		this.Form = Helpers.create_class({
 
 			init: function(options){
 
@@ -363,7 +363,8 @@ var FormValidation = new function(){
 					fields: {},
 					initial: {},
 					on_submit: null,
-					widget: new FormValidation.Forms.FormWidget()
+					widget: new FormValidation.Forms.FormWidget(),
+					element: null
 				}
 
 				var self = this;
@@ -373,10 +374,14 @@ var FormValidation = new function(){
 				this._widget = options.widget;
 				this._on_submit = options.on_submit;
 
-				this.element = $("<form></form>").submit(function(event){
+				this.element = options.element == null ? $("<form></form>") : options.element;
+
+				this.element.submit(function(event){
 					var all_clean = self.submit();
 					return all_clean;
 				});
+
+				this.element.data("validation", this);
 
 				this.refresh(options.initial, {})
 
