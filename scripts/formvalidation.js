@@ -75,7 +75,7 @@ var FormValidation = new function(){
 			},
 			validate: function(value){
 				if(value < this.min_value){
-					throw new FormValidation.Validation.ValidationError("You must enter at length a value of " + this.min_value.toString())
+					throw new FormValidation.Validation.ValidationError("You must enter at least a value of " + this.min_value.toString())
 				}
 			}
 		}, this.Validator);
