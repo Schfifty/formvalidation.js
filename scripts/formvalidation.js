@@ -9,7 +9,7 @@ var FormValidation = new function(){
 		this.create_class = function(definition, base){
 
 			var base = base || function(){};	
-			var Klass = definition.init || base.init || function(){};
+			var Klass = definition.init || function(){};
 			Klass.prototype = new base();
 
 			for(var key in definition){
@@ -275,12 +275,18 @@ var FormValidation = new function(){
 
 			this.Field = Helpers.create_class({
 
-				init: function(options){
+				base_init: function(options){					
 					var defaults = {
-						label: null
+						label: null,
+						required: true
 					};
+					this.validators = [];
 					options = $.extend(defaults, options);					
-					this.label = options.label;					
+					this.label = options.label;
+					this.required = options.required;
+					if(options.required){												 
+						this.validators.push(new FormValidation.Validation.RequiredValidator());					
+					}
 				},
 
 				try_cast_value: function(value){
@@ -319,21 +325,16 @@ var FormValidation = new function(){
 
 				init: function(options){
 
-					FormValidation.Forms.Fields.Field.call(this, options);
+					this.base_init(options);
 
 					var defaults = {
 						max: null,
-						min: null,						
-						required: true,
+						min: null,												
 						widget: new FormValidation.Forms.Widgets.TextFieldWidget()
 					}		
-
-					this.validators = [];												
+														
 					options = $.extend(defaults, options);					
-					this.widget = options.widget;
-					if(options.required){
-						this.validators.push(new FormValidation.Validation.RequiredValidator());
-					}
+					this.widget = options.widget;					
 					if(options.max != null){
 						this.validators.push(new FormValidation.Validation.MaxValueValidator(options.max));
 					}
@@ -359,26 +360,18 @@ var FormValidation = new function(){
 
 				init: function(choices, options){
 
-					FormValidation.Forms.Fields.Field.call(this, options);
+					this.base_init(options);
 
 					var defaults = {												
 						required: true,
 						widget: new FormValidation.Forms.Widgets.SelectWidget()
 					}
-
-					this.validators = [];		
-
+					
 					options = $.extend(defaults, options);
 					this.widget = options.widget;
-
 					this.widget.set_choices(choices);
 
-					if(options.required){
-						this.validators.push(new FormValidation.Validation.RequiredValidator());
-					}
-
-				},
-				
+				}				
 
 			}, this.Field);
 
@@ -386,7 +379,7 @@ var FormValidation = new function(){
 
 				init: function(options){
 
-					FormValidation.Forms.Fields.Field.call(this, options);
+					this.base_init(options);
 
 					var defaults = {
 						max_length: null,
@@ -395,13 +388,8 @@ var FormValidation = new function(){
 						widget: new FormValidation.Forms.Widgets.TextFieldWidget()
 					}
 
-					this.validators = [];		
-
 					options = $.extend(defaults, options);
-					this.widget = options.widget;
-					if(options.required){
-						this.validators.push(new FormValidation.Validation.RequiredValidator());
-					}
+					this.widget = options.widget;					
 					if(options.max_length != null){
 						this.validators.push(new FormValidation.Validation.MaxLengthValidator(options.max_length));
 					}
@@ -420,20 +408,15 @@ var FormValidation = new function(){
 
 				init: function(options){
 
-					FormValidation.Forms.Fields.Field.call(this, options);
+					this.base_init(options);
 
 					var defaults = {						
 						required: true,
 						widget: new FormValidation.Forms.Widgets.CheckboxWidget()
 					}
 
-					this.validators = [];		
-
 					options = $.extend(defaults, options);
-					this.widget = options.widget;
-					if(options.required){
-						this.validators.push(new FormValidation.Validation.RequiredValidator());
-					}					
+					this.widget = options.widget;					
 				}
 				
 			}, this.Field);
