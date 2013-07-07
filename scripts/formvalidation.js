@@ -206,6 +206,36 @@ var FormValidation = new function(){
 
 			});
 
+			this.SelectWidget = Helpers.create_class({
+
+				init: function(attrs){					
+					FormValidation.Forms.Widgets.Widget.call(this, attrs);
+				},
+
+				render: function(){
+					var select = $("<select></select>");
+					for(var value in this.choices){
+						var display = this.choices[value];
+						var option = $("<option></option>").attr("value", value).html(display);
+						select.append(option);
+					}
+					return select;
+				},
+
+				set_choices: function(choices){
+					this.choices = choices;
+				},
+
+				set_value: function(value){
+					this.element.val(value);
+				},
+
+				get_value: function(){
+					return this.element.val();
+				}
+
+			}, this.Widget);
+
 			this.CheckboxWidget = Helpers.create_class({
 				init: function(attrs){
 					FormValidation.Forms.Widgets.Widget.call(this, attrs);				
@@ -293,8 +323,7 @@ var FormValidation = new function(){
 
 					var defaults = {
 						max: null,
-						min: null,
-						initial: '',
+						min: null,						
 						required: true,
 						widget: new FormValidation.Forms.Widgets.TextFieldWidget()
 					}		
@@ -326,6 +355,32 @@ var FormValidation = new function(){
 
 			}, this.Field);
 
+			this.SelectField = Helpers.create_class({
+
+				init: function(choices, options){
+
+					FormValidation.Forms.Fields.Field.call(this, options);
+
+					var defaults = {												
+						required: true,
+						widget: new FormValidation.Forms.Widgets.SelectWidget()
+					}
+
+					this.validators = [];		
+
+					options = $.extend(defaults, options);
+					this.widget = options.widget;
+
+					this.widget.set_choices(choices);
+
+					if(options.required){
+						this.validators.push(new FormValidation.Validation.RequiredValidator());
+					}
+
+				},
+				
+
+			}, this.Field);
 
 			this.TextField = Helpers.create_class({	
 
@@ -335,8 +390,7 @@ var FormValidation = new function(){
 
 					var defaults = {
 						max_length: null,
-						min_length: null,
-						initial: '',
+						min_length: null,						
 						required: true,
 						widget: new FormValidation.Forms.Widgets.TextFieldWidget()
 					}

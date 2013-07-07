@@ -13,7 +13,8 @@
 					fields: {
 						'name': new FormValidation.Forms.Fields.TextField({ max_length: 5, min_length: 3 }),
 						'age': new FormValidation.Forms.Fields.IntegerField({ min: 18, max: 60 }),
-						'accept': new FormValidation.Forms.Fields.BooleanField()
+						'accept': new FormValidation.Forms.Fields.BooleanField(),
+						'color': new FormValidation.Forms.Fields.SelectField({ 'r': 'Red', 'b': 'Blue'})
 					},
 					initial: {
 						'accept': true
