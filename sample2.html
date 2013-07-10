@@ -1,0 +1,138 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<script type="text/javascript" src="scripts/jquery.js"></script>
+		<script type="text/javascript" src="scripts/jquery-ui.js"></script>
+		<script type="text/javascript" src="scripts/formvalidation.js"></script>		
+		<script type="text/javascript" src="scripts/jquery.formvalidation.js"></script>
+		<script type="text/javascript" src="scripts/jquery.formdialog.js"></script>
+
+		<link rel="stylesheet" type="text/css" href="css/ui-lightness/jquery-ui.css">
+
+		<style type="text/css">
+
+			* {
+				margin: 0;
+				padding: 0;
+				border-spacing: 0;
+				line-height: 1.5em;
+				color: #666;
+			}
+
+			button, h1, .ui-dialog .ui-dialog-title {
+				color: #333;
+			}
+
+			body {
+				font-size: 12px;		
+				font-family: Trebuchet MS,Tahoma,Verdana,Arial,sans-serif;						
+			}
+
+			form tr.error td {
+				color: darkred;
+			}
+
+			form tr td {
+				padding-top: 5px;
+				padding-left: 5px;
+				vertical-align: middle;
+			}
+
+			form tr td:first-child {
+				font-size: .8em;
+				font-weight: bold;
+			}
+
+			form input[type=text] {
+				width: 320px;
+				border: 1px solid #bbb;
+				box-shadow: inset -4px -4px 15px 2px #eee;
+				padding: 2px 5px;
+				height: 19px;
+			}
+
+			form input[type=checkbox] {
+				border: 1px solid #bbb;
+			}
+
+			form select:focus, form input:focus {
+				outline: 1px solid #e78f08; 
+			}
+
+			form select {
+				width: 100px;
+				border: 1px solid #bbb;
+			}				
+
+			#dialog_div h1 {
+				font-size: 15px;
+				margin-top: 0;
+				margin-bottom: 5px;
+			}		
+
+			#dialog_div div.description {
+				margin-bottom: 5px;
+			}
+
+			.ui-dialog .ui-dialog-buttonpane button {
+				margin: 0;
+				color: #333 !important;
+			}
+
+			.ui-dialog .ui-dialog-buttonpane {
+				padding: .3em;
+			}
+			
+		</style>
+
+		<script type="text/javascript">			 
+
+			$(function(){
+
+				$("#lang_select").change(function(){
+					FormValidation.Locale.set_lang($(this).val());					
+				});
+
+				$("#open_dialog").click(function(){
+					$("#dialog_div").formdialog({
+						title: 'Please enter your data',
+						width: 400,						
+						modal: true,
+						form: {
+							appendTo: '#form_container',
+							fields: {
+								'name': new FormValidation.Forms.Fields.TextField({ max_length: 5, min_length: 3 }),
+								'age': new FormValidation.Forms.Fields.IntegerField({ min: 18, max: 60 }),
+								'accept': new FormValidation.Forms.Fields.BooleanField(),
+								'color': new FormValidation.Forms.Fields.SelectField({ 'r': 'Red', 'b': 'Blue'})
+							},
+							initial: {
+								'accept': true
+							}
+						},
+						on_submit: function(data){
+							alert(JSON.stringify(data));
+						}
+					});
+				});
+
+			});
+		</script>
+	</head>
+	<body>
+		<select id="lang_select">
+			<option value="en">English</option>
+			<option value="de">German</option>
+		</select>			
+		<div id="dialog_div" style="display:none;">
+			<div>
+				<h1>My special data input form</h1>
+				<div class="description">Please enter your data here. When youre done submit via the submit button and see what happens</div>
+			</div>
+			<div id="form_container">
+
+			</div>
+		</div>
+		<button id="open_dialog">Open dialog</button>
+	</body>
+</html>

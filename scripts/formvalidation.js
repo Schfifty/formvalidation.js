@@ -433,7 +433,7 @@ var FormValidation = new function(){
 					var widget = widgets[name];
 
 					if(widget.error){
-						var error_row = $("<tr>");
+						var error_row = $("<tr class='error'>");
 						var empty_cell = $("<td></td>");
 						var error_cell = $("<td></td>").html(widget.error);
 						error_row.append(empty_cell);
